@@ -1,0 +1,99 @@
+# Additional translations at https://github.com/plataformatec/devise/wiki/I18n
+
+ru:
+  devise: &devise
+    confirmations:
+      confirmed                 : "Поздравляем! Вы успешно зарегистрированы."
+      send_instructions         : "В течение нескольких минут вы получите электронное письмо с инструкцией по подтверждению вашего аккаунта."
+      send_paranoid_instructions: "Если адрес вашей электронной почты существует в нашей базе данных, то в течение нескольких минут вы получите электронное письмо с инструкцией по подтверждению вашего аккаунта."
+      didnt_receive_instructions: "Не получили инструкции подтверждения?"
+      resend_instructions       : "Отправить инструкцию для подтверждения заново"
+    failure:
+      already_authenticated     : "Вы уже вошли в систему."
+      inactive                  : "Ваш аккаунт ещё не подтверждён."
+      invalid                   : "Неверный логин или пароль."
+      locked                    : "Ваш аккаунт заблокирован."
+      last_attempt              : "У вас осталась последняя попытка. В случае неудачи аккаунт будет заблокирован."
+      not_found_in_database     : "Неверный логин или пароль."
+      timeout                   : "Время вашей сессии истекло. Войдите в систему заново для продолжения."
+      unauthenticated           : "Для продолжения вам необходимо авторизоваться или зарегистрироваться в системе."
+      unconfirmed               : "Для продолжения вам необходимо подтвердить ваш аккаунт."
+      admin_user:
+        unauthenticated         : "Вы не авторизованы."
+      user:
+        unauthenticated         : "Вы не авторизованы."
+        not_found_in_database   : "Неправильный пароль или адрес электронной почты. Попробуйте ещё раз"
+    mailer:
+      confirmation_instructions:
+        subject                 : "Инструкция для подтверждения аккаунта"
+      reset_password_instructions:
+        subject                 : "Восстановление пароля администратора"
+      unlock_instructions:
+        subject                 : "Инструкция для разблокирования аккаунта"
+    omniauth_callbacks:
+      failure                   : "Could not authenticate you from %{kind} because \"%{reason}\"."
+      success                   : "Successfully authenticated from %{kind} account."
+    passwords:
+      no_token                  : "Вы не можете перейти на эту страницу не из ссылки из письма сброса пароля. Если вы попали на эту страницу из такой ссылки, удостоверьтесь, что URL указан правильно"
+      send_instructions         : "В течение нескольких минут вы получите электронное письмо с инструкцией по cбросу пароля."
+      send_paranoid_instructions: "Если адрес вашей электронной почты существует в нашей базе данных, то в течение нескольких минут вы получите электронное письмо с инструкцией по сбросу пароля."
+      updated                   : "Ваш пароль был успешно изменён. Вы авторизованы."
+      updated_not_active        : "Пароль успешно изменён."
+    registrations:
+      destroyed                 : "Прощайте! Ваш аккаунт был успешно уничтожен. Мы надеемся, что вы вернётесь в скором времени."
+      signed_up_but_inactive    : "Вы успешно зарегистрировались в системе. Для авторизации необходимо его активировать."
+      signed_up_but_locked      : "Вы успешно зарегистрировались в системе. Авторизация невозможна, потому что ваш аккаунт заблокирован."
+      signed_up_but_unconfirmed : "A message with a confirmation link has been sent to your email address. Please open the link to activate your account."
+      update_needs_confirmation : "You updated your account successfully, but we need to verify your new email address. Please check your email and click on the confirm link to finalize confirming your new email address."
+      updated                   : "Аккаунт успешно обновлён."
+    sessions:
+      signed_in                 : "Поздравляем! Вы успешно вошли."
+      signed_out                : "Вы успешно вышли из системы."
+    unlocks:
+      resend_instructions       : "Выслать инструкцию для разблокировки"
+      send_instructions         : "В течение нескольких минут вы получите электронное письмо с инструкцией по разблокированию вашего аккаунта."
+      send_paranoid_instructions: "Если адрес вашей электронной почты существует в нашей базе данных, то в течение нескольких минут вы получите электронное письмо с инструкцией по разблокированию вашего аккаунта."
+      unlocked                  : "Ваш аккаунт был успешно разблокирован. Теперь вы можете войти в систему."
+    change_password:
+      title                     : "Изменение пароля"
+      submit                    : "Изменение пароля"
+      new                       : "Новый пароль"
+      confirm_new               : "Подтвердите пароль"
+    email:
+      title                     : "Электронная почта"
+    links:
+      sign_in                   : "Войти"
+      sign_up                   : "Зарегистрироваться"
+      sign_out                  : "Выйти"
+      forgot_your_password      : "Забыли пароль?"
+      sign_in_with_omniauth_provider: "Войти с помощью %{provider}"
+    login:
+      title                     : "Войти"
+      remember_me               : "Запомнить меня"
+      submit                    : "Войти"
+    password:
+      title                     : "Пароль"
+      confirm                   : "Подтвердите пароль"
+    reset_password:
+      title                     : "Забыли пароль?"
+      send_instructions         : "Выслать мне на почту инструкцию"
+      submit                    : "Сбросить пароль"
+    sessions:
+      admin_user:
+        signed_in               : "Вы успешно вошли."
+    unlock:
+      title                     : "Повторно отправить инструкции по разблокировке"
+      submit                    : "Повторно отправить инструкции по разблокировке"
+    username:
+      title                     : "Логин"
+      access_denied:
+        message                 : "Вы не авторизованы для выполнения данного действия."
+    index_list:
+      table                     : "Таблица"
+      block                     : "Список"
+      grid                      : "Сетка"
+      blog                      : "Блог"
+
+  active_admin:
+    devise:
+      <<: *devise
