@@ -15,3 +15,29 @@
 // For example, to change the default status-tag color:
 //
 //   .status_tag { background: #6090DB; }
+
+.user-show {
+  .left_block {
+    width : 30%;
+    float : left;
+  }
+  .right_block {
+    width : 69%;
+    float : right;
+  }
+  .bottom_block {
+    clear : both;
+  }
+}
+
+.pull-right {
+  float   : right !important;
+}
+
+.pull-left {
+  float   : left !important;
+}
+
+.clear {
+  clear   : both;
+}
