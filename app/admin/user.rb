@@ -24,7 +24,7 @@ ActiveAdmin.register User do
   index do
     selectable_column # this column is required for batch actions
     # column t('activerecord.attributes.user.name'), :name # would do the same as 'column :name' with correct translations (ru.activerecord.attributes.user.name)
-    column :name
+    column :name#, max_width: '100px', min_width: '50px'
     column :email
     column :iq do |user|
       user.head.iq
@@ -36,6 +36,7 @@ ActiveAdmin.register User do
     # Here ActiveAdmin DSL gets only translation from corresponding field (locale.yml):
     # column t('activerecord.attributes.user.state') do |user| # -> would do the same
     column :state      do |user|
+      # Status tag is a convenient instrument for fields like "status"
       user.state.zero? ? status_tag(t('active_admin.user.state.fresh'), :ok) : status_tag(t('active_admin.user.state.dead'), :error )
     end
 
@@ -174,7 +175,7 @@ ActiveAdmin.register User do
   end
 
   # SIDEBAR (optional)
-  sidebar "Какой-то сайдбар" do
+  sidebar "Какой-то сайдбар", only: :index do
     ol do
       User.all.each do |user|
         li user.name + " : " + user.email + " : " + (user.state.zero? ? t('active_admin.user.state.fresh') : t('active_admin.user.state.dead'))
