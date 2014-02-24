@@ -76,9 +76,11 @@ ru:
         other : "Успешно удалено: %{count} %{plural_model}"
       selection_toggle_explanation  : "(Отметить всё / Снять выделение)"
       link                          : "Создать"
-      action_label                  : "%{title} выбранное"
+      action_label                  : "%{title} больных"
       labels:
-        destroy                     : "Удалить"
+        checkout                    : "Выписать"
+        send_out                    : "Усыпить"
+        resurrect                   : "Воскресить"
     comments:
       resource_type   : "Тип ресурса"
       author_type     : "Тип автора"
@@ -104,6 +106,9 @@ ru:
         resurrect  : "Воскресить"
         send_out   : "Усыпить"
         gone_home  : "Пользователь был успешно выписан и поехал домой."
+        destroyed  : "Пациенты %{selection} были успешно выписаны и поехали домой."
+        resurrected: "Пациенты %{selection} были успешно воскресены."
+        sent_out   : "Пациенты %{selection} были успешно усыплены."
       state:
         fresh : "Зарегистрирован"
         dead  : "Готов"

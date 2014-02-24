@@ -2,7 +2,8 @@ ActiveAdmin.register User do
   menu priority: 1, parent: 'Пользователи'#, label: 'Пользователи'
   permit_params :name, :email, :state, :legs, :arms, :iq, :picture
   actions :all#, except: [:destroy] || only: [:index, :show]
-  config.batch_actions = false
+  # config.batch_actions = false
+  config.clear_batch_actions!
   config.clear_action_items!
 
 
@@ -21,6 +22,7 @@ ActiveAdmin.register User do
   # VIEWS
   # index
   index do
+    selectable_column # this column is required for batch actions
     # column t('activerecord.attributes.user.name'), :name # would do the same as 'column :name' with correct translations (ru.activerecord.attributes.user.name)
     column :name
     column :email
@@ -34,7 +36,7 @@ ActiveAdmin.register User do
     # Here ActiveAdmin DSL gets only translation from corresponding field (locale.yml):
     # column t('activerecord.attributes.user.state') do |user| # -> would do the same
     column :state      do |user|
-      user.state.zero? ? t('active_admin.user.state.fresh') : t('active_admin.user.state.dead')
+      user.state.zero? ? status_tag(t('active_admin.user.state.fresh'), :ok) : status_tag(t('active_admin.user.state.dead'), :error )
     end
 
     column :created_at do |user|
@@ -171,6 +173,15 @@ ActiveAdmin.register User do
     end
   end
 
+  # SIDEBAR (optional)
+  sidebar "Какой-то сайдбар" do
+    ol do
+      User.all.each do |user|
+        li user.name + " : " + user.email + " : " + (user.state.zero? ? t('active_admin.user.state.fresh') : t('active_admin.user.state.dead'))
+      end
+    end
+  end
+
 
   # ACTIONS
   # Actions for a single instance (id specification required)
@@ -211,6 +222,54 @@ ActiveAdmin.register User do
 
   action_item only: :show do
     link_to t('active_admin.user.actions.checkout'), admin_user_path(user), method: :delete
+  end
+
+
+  # BATCH ACTIONS
+  # From here...
+  # batch_action :resurrect do |selection|
+  #   names = []
+  #   User.find(selection).each do |user|
+  #     names << user.name
+  #     user.update(state: 0)
+  #   end
+  #   flash[:notice] = t('active_admin.user.actions.resurrected', selection: names.join(', '))
+  #   redirect_to action: :index
+  # end
+
+  # batch_action :send_out do |selection|
+  #   names = []
+  #   User.find(selection).each do |user|
+  #     names << user.name
+  #     user.update(state: 1)
+  #   end
+  #   flash[:notice] = t('active_admin.user.actions.sent_out', selection: names.join(', '))
+  #   redirect_to action: :index
+  # end
+
+  # ...to here is the same as (meta):
+
+  [
+    { action: :send_out,  new_state: 1, priority: 1, message: 'sent_out'    },
+    { action: :resurrect, new_state: 0, priority: 2, message: 'resurrected' }
+  ].each do |ba|
+    batch_action ba[:action], priority: ba[:priority], confirm: true do |selection|
+      names = []
+      User.find(selection).each do |user|
+        names << user.name
+        user.update(state: ba[:new_state])
+      end
+      redirect_to collection_path, notice: t("active_admin.user.actions.#{ba[:message]}", selection: names.join(', '))
+    end
+  end
+
+  batch_action :checkout, priority: 3, confirm: 'Точно-точно?' do |selection|
+    names = []
+    User.find(selection).each do |user|
+      names << user.name
+      user.destroy
+    end
+    redirect_to collection_path, notice: t('active_admin.user.actions.destroyed', selection: names.join(', '))
   end
 
 
