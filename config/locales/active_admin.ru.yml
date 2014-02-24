@@ -7,8 +7,10 @@ ru:
     accept      : "Принять"
     actions     : "Действия"
     any         : "Любой"
+    all         : "Все"
     dashboard   : "Панель управления"
     cancel      : "Отмена"
+    contacts    : "Контакты"
     refresh     : "Обновить"
     create_model: "Создать %{model}"
     created_at  : "Дата создания"
@@ -89,3 +91,19 @@ ru:
       title_content   : "Комментарии (%{count})"
       errors:
         empty_text    : "Комментарий не сохранен, текст не должен быть пустым."
+
+    user:
+      # Accepting variables from translation call
+      arms_count     : "Количество рук: %{arms}"
+      legs_count     : "Количество ног: %{legs}"
+      actions:
+        add        : "Вписать нового"
+        delete_all : "Амнистия!"
+        checkout   : "Выписать"
+        details    : "Подробнее"
+        resurrect  : "Воскресить"
+        send_out   : "Усыпить"
+        gone_home  : "Пользователь был успешно выписан и поехал домой."
+      state:
+        fresh : "Зарегистрирован"
+        dead  : "Готов"

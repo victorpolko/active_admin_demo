@@ -1,20 +1,27 @@
 ActiveAdmin.register User do
   menu priority: 1, parent: 'Пользователи'#, label: 'Пользователи'
   permit_params :name, :email, :state, :legs, :arms, :iq, :picture
-  actions :all#, except: :destroy
+  actions :all#, except: [:destroy] || only: [:index, :show]
   config.batch_actions = false
   config.clear_action_items!
 
 
   # SCOPES, all defined in model (models/user.rb)
-  scope 'Bсе',     :all
-  scope 'Cвежие',  :fresh
-  scope 'Мёртвыe', :dead
+  scope -> { I18n.t('active_admin.all')               }, :all
+  scope -> { I18n.t('activerecord.models.user.fresh') }, :fresh
+  scope -> { I18n.t('activerecord.models.user.dead')  }, :dead
 
+  # FILTERS
+  filter :name#,  label: -> { I18n.t('activerecord.attributes.user.name')  }
+  filter :email#, label: -> { I18n.t('activerecord.attributes.user.email') }
+  filter :state, as: :select, collection: -> { [[t('active_admin.user.state.fresh'), 0], [t('active_admin.user.state.dead'), 1]] }
+  filter :legs#,  label: -> { I18n.t('activerecord.attributes.user.legs') }
+  filter :arms#,  label: -> { I18n.t('activerecord.attributes.user.arms') }
 
   # VIEWS
   # index
   index do
+    # column t('activerecord.attributes.user.name'), :name # would do the same as 'column :name' with correct translations (ru.activerecord.attributes.user.name)
     column :name
     column :email
     column :iq do |user|
@@ -24,10 +31,10 @@ ActiveAdmin.register User do
     column :legs
     column :arms
 
-    # Here Rails will get only translation from corresponding field (locale.yml):
-    # column t('activerecord.attributes.user.state') do |user|  => would do the same
+    # Here ActiveAdmin DSL gets only translation from corresponding field (locale.yml):
+    # column t('activerecord.attributes.user.state') do |user| # -> would do the same
     column :state      do |user|
-      user.state.zero? ? 'Зарегистрирован' : 'Умер'
+      user.state.zero? ? t('active_admin.user.state.fresh') : t('active_admin.user.state.dead')
     end
 
     column :created_at do |user|
@@ -38,10 +45,10 @@ ActiveAdmin.register User do
       Russian::strftime(user.updated_at.in_time_zone('Moscow'), "%d %B %Y, %H:%M")
     end
 
-    column 'Действия'  do |user|
-      out = link_to('Подробней',   admin_user_path(user)) + " " +
-            link_to('Выписать',    admin_user_path(user), method: :delete) + " "
-      user.state.zero? ? out << link_to('Усыпить', send_out_admin_user_path(user)) : out << link_to('Воскресить', resurrect_admin_user_path(user))
+    column t('active_admin.actions')  do |user|
+      out = link_to(t('active_admin.user.actions.details'),   admin_user_path(user)) + " " +
+            link_to(t('active_admin.user.actions.checkout'),    admin_user_path(user), method: :delete) + " "
+      user.state.zero? ? out << link_to(t('active_admin.user.actions.send_out'), send_out_admin_user_path(user)) : out << link_to(t('active_admin.user.actions.resurrect'), resurrect_admin_user_path(user))
     end
   end
 
@@ -66,18 +73,19 @@ ActiveAdmin.register User do
   show title: :name do |user|
     div class: 'user-show' do
       div class: 'left_block' do
-        panel 'Контакты' do
+        panel t('active_admin.contacts') do
           attributes_table_for user do
             row :name
 
             row :state do
               ol do
-                h5 user.state.zero? ? 'Зарегистрирован' : 'Умер'
+                h5 user.state.zero? ? t('active_admin.user.state.fresh') : t('active_admin.user.state.dead')
                 li do
-                  h4 "Количество рук: #{user.arms}"
+                  # Passing variables to translation:
+                  h4 t('active_admin.user.arms_count', arms: user.arms)
                 end
                 li do
-                  h4 "Количество ног: #{user.legs}"
+                  h4 t('active_admin.user.legs_count', legs: user.legs)
                 end
               end
             end
@@ -104,9 +112,11 @@ ActiveAdmin.register User do
           para class: 'left_block' do
             "Пациент #{user.name.capitalize} обследуется в нашей клинике уже довольно давно - с сентября позапрошлого года. В течение этого времени проводились разные испытания психики больного; тесты показали, что состояние пациента меняется плавно и зависит от формы таблеток и температуры воды, которой он их запивает. А вообще, Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consectetur, amet, rerum, natus, fugiat quae similique repudiandae illum maxime debitis beatae fuga tempore quibusdam adipisci expedita aut soluta ea dolorem nesciunt?Omnis, sit, hic, a, nesciunt tenetur quos distinctio id eius nemo doloribus quam natus corporis labore ipsa repellat error fugiat aliquam rem veritatis sint repudiandae debitis esse est dignissimos earum.Excepturi, soluta nulla quidem velit? Nostrum, et ratione dolor blanditiis unde quo reiciendis molestiae modi rem sapiente saepe earum recusandae animi iste inventore. Ipsa, officiis alias sunt ducimus suscipit non!Suscipit, est, necessitatibus ducimus obcaecati perspiciatis sed doloremque blanditiis dolor mollitia reiciendis aliquam numquam fuga quia repellat fugiat dolorum expedita sit harum natus modi consequatur error iste doloribus."
           end
+
           div class: 'pull-right' do
             image_tag user.picture.present? ? user.picture : 'glad_patient.png', size: '200x300'
           end
+
           div class: 'pull-right' do
             attributes_table_for user do
               row :name
@@ -114,7 +124,7 @@ ActiveAdmin.register User do
                 user.head.iq
               end
               row :state do
-                user.state.zero? ? 'Зарегистрирован' : 'Умер'
+                user.state.zero? ? t('active_admin.user.state.fresh') : t('active_admin.user.state.dead')
               end
               row :created_at do
                 Russian::strftime(user.created_at.in_time_zone('Moscow'), "%d %B %Y, %H:%M")
@@ -131,30 +141,30 @@ ActiveAdmin.register User do
 
       div class: 'bottom_block' do
         table_for user, class: 'index_table' do
-          column 'Имя', :name
-          column        :email
-          column 'IQ' do |user|
+          column t('activerecord.attributes.user.name'), :name
+          column :email
+          column t('activerecord.attributes.head.iq') do |user|
             user.head.iq
           end
 
-          column 'Ноги', :legs
-          column 'Руки', :arms
+          column t('activerecord.attributes.user.legs'), :legs
+          column t('activerecord.attributes.user.arms'), :arms
 
-          column 'Состояние' do |user|
-            user.state.zero? ? 'Зарегистрирован' : 'Умер'
+          column t('activerecord.attributes.user.state') do |user|
+            user.state.zero? ? t('active_admin.user.state.fresh') : t('active_admin.user.state.dead')
           end
 
-          column 'Дата регистрации' do |user|
+          column t('activerecord.attributes.user.created_at') do |user|
             Russian::strftime(user.created_at.in_time_zone('Moscow'), "%d %B %Y, %H:%M")
           end
 
-          column 'Обновлён'         do |user|
+          column t('activerecord.attributes.user.updated_at') do |user|
             Russian::strftime(user.updated_at.in_time_zone('Moscow'), "%d %B %Y, %H:%M")
           end
 
-          column 'Действия'         do |user|
-            out = link_to('Выписать',    admin_user_path(user), method: :delete) + " "
-            user.state.zero? ? out << link_to('Усыпить', send_out_admin_user_path(user)) : out << link_to('Воскресить', resurrect_admin_user_path(user))
+          column t('active_admin.actions') do |user|
+            out = link_to(t('active_admin.user.actions.checkout'), admin_user_path(user), method: :delete) + " "
+            user.state.zero? ? out << link_to(t('active_admin.user.actions.send_out'), send_out_admin_user_path(user)) : out << link_to(t('active_admin.user.actions.resurrect'), resurrect_admin_user_path(user))
           end
         end
       end
@@ -163,6 +173,7 @@ ActiveAdmin.register User do
 
 
   # ACTIONS
+  # Actions for a single instance (id specification required)
   member_action :send_out do
     User.find(params[:id]).update(state: 1)
     redirect_to admin_users_path
@@ -173,6 +184,7 @@ ActiveAdmin.register User do
     redirect_to admin_users_path
   end
 
+  # Actions for all instances (no id specified)
   collection_action :delete_all, method: :delete do
     User.destroy_all
     redirect_to action: :index
@@ -180,38 +192,39 @@ ActiveAdmin.register User do
 
 
   # ACTION ITEMS
+  # Buttons on defined pages
   action_item only: :index do
-    link_to 'Вписать нового', new_admin_user_path
+    link_to t('active_admin.user.actions.add'), new_admin_user_path
   end
 
   action_item only: :index do
-    link_to 'Амнистия!', delete_all_admin_users_path, method: :delete, confirm: 'Точно-точно?' if User.any?
+    link_to t('active_admin.user.actions.delete_all'), delete_all_admin_users_path, method: :delete, confirm: 'Точно-точно?' if User.any?
   end
 
   action_item only: :show do
-    link_to 'Редактировать', edit_admin_user_path(user)
+    link_to t('active_admin.reduct'), edit_admin_user_path(user)
   end
 
   action_item only: :show do
-    user.state.zero? ? link_to('Усыпить', send_out_admin_user_path(user)) : link_to('Воскресить', resurrect_admin_user_path(user))
+    user.state.zero? ? link_to(t('active_admin.user.actions.send_out'), send_out_admin_user_path(user)) : link_to(t('active_admin.user.actions.resurrect'), resurrect_admin_user_path(user))
   end
 
   action_item only: :show do
-    link_to 'Выписать', admin_user_path(user), method: :delete
+    link_to t('active_admin.user.actions.checkout'), admin_user_path(user), method: :delete
   end
 
 
   # CONTROLLER
   controller do
-    # Можно проще переопределить название конкретной страницы
+    # Можно переопределить название конкретной страницы и таким образом:
     # def new
-    #   @page_title = 'Создание пользователя'
+    #   @page_title = 'Создать пользователя'
     #   super
     # end
 
     def destroy
       super
-      flash[:notice] = 'Пользователь был успешно выписан и поехал домой.'
+      flash[:notice] = t('active_admin.user.actions.gone_home')
     end
 
     def create
