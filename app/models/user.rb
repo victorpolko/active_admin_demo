@@ -1,5 +1,5 @@
 class User < ActiveRecord::Base
-  has_one  :head
+  has_one  :head, dependent: :destroy
 
   scope :fresh, -> { where(state: 0) }
   scope :dead,  -> { where(state: 1) }
