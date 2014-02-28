@@ -4,7 +4,7 @@ class User < ActiveRecord::Base
   scope :fresh, -> { where(state: 0) }
   scope :dead,  -> { where(state: 1) }
 
-  validates :name, presence: true
+  validates :name, :email, presence: true
 
   attr_accessor :iq
 end

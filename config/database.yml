@@ -1,8 +1,7 @@
 development:
-  database: active_admin_demo_development
-  adapter: postgresql
-  encoding: unicode
-  pool: 5
-  username:
-  password:
+  database  : db/development.sqlite3
+  adapter   : sqlite3
+  encoding  : unicode
+  pool      : 5
+  timeout   : 5000
 
